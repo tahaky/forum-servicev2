@@ -3,23 +3,20 @@ spring:
     name: forum-servicev2
   
   datasource:
-    url: jdbc:postgresql://localhost:5432/forumdb
+    url: jdbc:postgresql://192.168.1.37:5432/xmpp_plate
     username: postgres
     password: postgres
     driver-class-name: org.postgresql.Driver
   
   jpa:
     hibernate:
-      ddl-auto: validate
+      ddl-auto: update
     show-sql: true
     properties:
       hibernate:
         format_sql: true
         dialect: org.hibernate.dialect.PostgreSQLDialect
-  
-  sql:
-    init:
-      mode: always
+
 
 server:
   port: 8080
