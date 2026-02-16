@@ -1,7 +1,13 @@
 package com.forum.controller;
 
-import com.forum.dto.*;
-import com.forum.entity.*;
+import com.forum.dto.CreateThreadRequest;
+import com.forum.dto.CreateSubthreadRequest;
+import com.forum.dto.CreateMessageRequest;
+import com.forum.dto.VoteRequest;
+import com.forum.dto.MessageResponse;
+import com.forum.entity.Message;
+import com.forum.entity.MessageVote;
+import com.forum.entity.Subthread;
 import com.forum.service.ForumService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,8 +23,8 @@ public class ForumController {
     private final ForumService forumService;
     
     @PostMapping("/threads")
-    public ResponseEntity<Thread> createThread(@RequestBody CreateThreadRequest request) {
-        Thread thread = forumService.createThread(request);
+    public ResponseEntity<com.forum.entity.Thread> createThread(@RequestBody CreateThreadRequest request) {
+        com.forum.entity.Thread thread = forumService.createThread(request);
         return ResponseEntity.status(HttpStatus.CREATED).body(thread);
     }
     

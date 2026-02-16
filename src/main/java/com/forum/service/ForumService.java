@@ -1,8 +1,18 @@
 package com.forum.service;
 
-import com.forum.dto.*;
-import com.forum.entity.*;
-import com.forum.repository.*;
+import com.forum.dto.CreateThreadRequest;
+import com.forum.dto.CreateSubthreadRequest;
+import com.forum.dto.CreateMessageRequest;
+import com.forum.dto.VoteRequest;
+import com.forum.dto.MessageResponse;
+import com.forum.entity.Message;
+import com.forum.entity.MessageVote;
+import com.forum.entity.MessageVoteId;
+import com.forum.entity.Subthread;
+import com.forum.repository.ThreadRepository;
+import com.forum.repository.SubthreadRepository;
+import com.forum.repository.MessageRepository;
+import com.forum.repository.MessageVoteRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -21,8 +31,8 @@ public class ForumService {
     private final MessageVoteRepository messageVoteRepository;
     
     @Transactional
-    public Thread createThread(CreateThreadRequest request) {
-        Thread thread = new Thread();
+    public com.forum.entity.Thread createThread(CreateThreadRequest request) {
+        com.forum.entity.Thread thread = new com.forum.entity.Thread();
         thread.setUserId(request.getUserId());
         thread.setType(request.getType());
         thread.setModelId(request.getModelId());
@@ -33,7 +43,7 @@ public class ForumService {
     
     @Transactional
     public Subthread createSubthread(UUID threadId, CreateSubthreadRequest request) {
-        Thread thread = threadRepository.findById(threadId)
+        com.forum.entity.Thread thread = threadRepository.findById(threadId)
             .orElseThrow(() -> new RuntimeException("Thread not found"));
         
         Subthread subthread = new Subthread();
@@ -91,7 +101,7 @@ public class ForumService {
     
     @Transactional(readOnly = true)
     public List<MessageResponse> getMessagesByModelId(String modelId) {
-        Thread thread = threadRepository.findByModelId(modelId)
+        com.forum.entity.Thread thread = threadRepository.findByModelId(modelId)
             .orElseThrow(() -> new RuntimeException("Thread not found for modelId: " + modelId));
         
         List<Message> messages = messageRepository.findByThreadId(thread.getId());
