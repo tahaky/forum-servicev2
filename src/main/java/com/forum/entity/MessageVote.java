@@ -1,5 +1,6 @@
 package com.forum.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -21,6 +22,7 @@ public class MessageVote {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @MapsId("messageId")
     @JoinColumn(name = "message_id", nullable = false)

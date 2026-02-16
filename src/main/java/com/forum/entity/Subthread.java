@@ -1,5 +1,6 @@
 package com.forum.entity;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import jakarta.persistence.*;
 import lombok.Data;
 import java.time.LocalDateTime;
@@ -26,6 +27,7 @@ public class Subthread {
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
     
+    @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thread_id", nullable = false)
     private Thread thread;
