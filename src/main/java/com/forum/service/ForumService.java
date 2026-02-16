@@ -76,9 +76,13 @@ public class ForumService {
         
         MessageVoteId voteId = new MessageVoteId(messageId, request.getUserId());
         MessageVote vote = messageVoteRepository.findById(voteId)
-            .orElse(new MessageVote());
+            .orElse(null);
         
-        if (vote.getId() == null) {
+        boolean isNewVote = (vote == null);
+        Boolean oldUpvoted = isNewVote ? null : vote.getUpvoted();
+        
+        if (isNewVote) {
+            vote = new MessageVote();
             vote.setId(voteId);
             vote.setCreatedAt(LocalDateTime.now());
         } else {
@@ -88,6 +92,18 @@ public class ForumService {
         vote.setUpvoted(request.getUpvoted());
         vote.setMessage(message);
         
+        // Update message upvote count
+        if (isNewVote && request.getUpvoted()) {
+            message.setUpvoteCount(message.getUpvoteCount() + 1);
+        } else if (!isNewVote && !oldUpvoted.equals(request.getUpvoted())) {
+            if (request.getUpvoted()) {
+                message.setUpvoteCount(message.getUpvoteCount() + 1);
+            } else {
+                message.setUpvoteCount(message.getUpvoteCount() - 1);
+            }
+        }
+        
+        messageRepository.save(message);
         return messageVoteRepository.save(vote);
     }
     

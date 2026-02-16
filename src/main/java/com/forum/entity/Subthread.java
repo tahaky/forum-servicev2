@@ -13,6 +13,7 @@ import java.util.UUID;
 public class Subthread {
     
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(columnDefinition = "UUID")
     private UUID id;
     
