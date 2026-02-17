@@ -5,6 +5,7 @@ import com.forum.dto.CreateSubthreadRequest;
 import com.forum.dto.CreateMessageRequest;
 import com.forum.dto.VoteRequest;
 import com.forum.dto.MessageResponse;
+import com.forum.dto.ThreadResponse;
 import com.forum.entity.Message;
 import com.forum.entity.MessageVote;
 import com.forum.entity.MessageVoteId;
@@ -14,6 +15,9 @@ import com.forum.repository.SubthreadRepository;
 import com.forum.repository.MessageRepository;
 import com.forum.repository.MessageVoteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -137,5 +141,31 @@ public class ForumService {
             message.getUpdatedAt(),
             message.getSubthread().getId()
         );
+    }
+    
+    private ThreadResponse toThreadResponse(com.forum.entity.Thread thread) {
+        return new ThreadResponse(
+            thread.getId(),
+            thread.getUserId(),
+            thread.getType(),
+            thread.getModelId(),
+            thread.getTitle(),
+            thread.getCreatedAt()
+        );
+    }
+    
+    @Transactional(readOnly = true)
+    public Page<ThreadResponse> getAllThreads(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return threadRepository.findAll(pageable)
+            .map(this::toThreadResponse);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<ThreadResponse> getRecentThreads(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return threadRepository.findAllByOrderByCreatedAtDesc(pageable).stream()
+            .map(this::toThreadResponse)
+            .collect(Collectors.toList());
     }
 }
