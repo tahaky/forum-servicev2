@@ -15,6 +15,7 @@ public class SubthreadResponse {
     private String userId;
     private String title;
     private LocalDateTime createdAt;
+    private String initalMessage;
     private UUID threadId;
     private List<MessageResponse> messages;
 }

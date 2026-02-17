@@ -10,4 +10,6 @@ import lombok.NoArgsConstructor;
 public class CreateSubthreadRequest {
     private String userId;
     private String title;
+    private String initalMessage;
+
 }

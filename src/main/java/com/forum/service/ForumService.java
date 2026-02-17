@@ -21,6 +21,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+
 import java.time.LocalDateTime;
 import java.util.List;
 import java.util.UUID;
@@ -29,12 +30,12 @@ import java.util.stream.Collectors;
 @Service
 @RequiredArgsConstructor
 public class ForumService {
-    
+
     private final ThreadRepository threadRepository;
     private final SubthreadRepository subthreadRepository;
     private final MessageRepository messageRepository;
     private final MessageVoteRepository messageVoteRepository;
-    
+
     @Transactional
     public com.forum.entity.Thread createThread(CreateThreadRequest request) {
         com.forum.entity.Thread thread = new com.forum.entity.Thread();
@@ -45,25 +46,26 @@ public class ForumService {
         thread.setCreatedAt(LocalDateTime.now());
         return threadRepository.save(thread);
     }
-    
+
     @Transactional
     public Subthread createSubthread(UUID threadId, CreateSubthreadRequest request) {
         com.forum.entity.Thread thread = threadRepository.findById(threadId)
-            .orElseThrow(() -> new RuntimeException("Thread not found"));
-        
+                .orElseThrow(() -> new RuntimeException("Thread not found"));
+
         Subthread subthread = new Subthread();
         subthread.setUserId(request.getUserId());
         subthread.setTitle(request.getTitle());
+        subthread.setInitalMessage(request.getInitalMessage());
         subthread.setCreatedAt(LocalDateTime.now());
         subthread.setThread(thread);
         return subthreadRepository.save(subthread);
     }
-    
+
     @Transactional
     public Message createMessage(UUID subthreadId, CreateMessageRequest request) {
         Subthread subthread = subthreadRepository.findById(subthreadId)
-            .orElseThrow(() -> new RuntimeException("Subthread not found"));
-        
+                .orElseThrow(() -> new RuntimeException("Subthread not found"));
+
         Message message = new Message();
         message.setUserId(request.getUserId());
         message.setBody(request.getBody());
@@ -73,19 +75,19 @@ public class ForumService {
         message.setSubthread(subthread);
         return messageRepository.save(message);
     }
-    
+
     @Transactional
     public MessageVote voteMessage(UUID messageId, VoteRequest request) {
         Message message = messageRepository.findById(messageId)
-            .orElseThrow(() -> new RuntimeException("Message not found"));
-        
+                .orElseThrow(() -> new RuntimeException("Message not found"));
+
         MessageVoteId voteId = new MessageVoteId(messageId, request.getUserId());
         MessageVote vote = messageVoteRepository.findById(voteId)
-            .orElse(null);
-        
+                .orElse(null);
+
         boolean isNewVote = (vote == null);
         Boolean oldUpvoted = isNewVote ? null : vote.getUpvoted();
-        
+
         if (isNewVote) {
             vote = new MessageVote();
             vote.setId(voteId);
@@ -93,10 +95,10 @@ public class ForumService {
         } else {
             vote.setUpdatedAt(LocalDateTime.now());
         }
-        
+
         vote.setUpvoted(request.getUpvoted());
         vote.setMessage(message);
-        
+
         // Update message upvote count
         if (isNewVote && request.getUpvoted()) {
             message.setUpvoteCount(message.getUpvoteCount() + 1);
@@ -107,122 +109,124 @@ public class ForumService {
                 message.setUpvoteCount(message.getUpvoteCount() - 1);
             }
         }
-        
+
         messageRepository.save(message);
         return messageVoteRepository.save(vote);
     }
-    
+
     @Transactional(readOnly = true)
     public List<MessageResponse> getMessagesBySubthread(UUID subthreadId) {
         List<Message> messages = messageRepository.findBySubthreadId(subthreadId);
         return messages.stream()
-            .map(this::toMessageResponse)
-            .collect(Collectors.toList());
+                .map(this::toMessageResponse)
+                .collect(Collectors.toList());
     }
-    
+
     @Transactional(readOnly = true)
     public List<MessageResponse> getMessagesByModelId(String modelId) {
         com.forum.entity.Thread thread = threadRepository.findByModelId(modelId)
-            .orElseThrow(() -> new RuntimeException("Thread not found for modelId: " + modelId));
-        
+                .orElseThrow(() -> new RuntimeException("Thread not found for modelId: " + modelId));
+
         List<Message> messages = messageRepository.findByThreadId(thread.getId());
         return messages.stream()
-            .map(this::toMessageResponse)
-            .collect(Collectors.toList());
+                .map(this::toMessageResponse)
+                .collect(Collectors.toList());
     }
-    
+
     private MessageResponse toMessageResponse(Message message) {
         return new MessageResponse(
-            message.getId(),
-            message.getUserId(),
-            message.getBody(),
-            message.getCreatedAt(),
-            message.getUpvoteCount(),
-            message.getDeleted(),
-            message.getUpdatedAt(),
-            message.getSubthread().getId()
+                message.getId(),
+                message.getUserId(),
+                message.getBody(),
+                message.getCreatedAt(),
+                message.getUpvoteCount(),
+                message.getDeleted(),
+                message.getUpdatedAt(),
+                message.getSubthread().getId()
         );
     }
-    
+
     private ThreadResponse toThreadResponse(com.forum.entity.Thread thread) {
         return new ThreadResponse(
-            thread.getId(),
-            thread.getUserId(),
-            thread.getType(),
-            thread.getModelId(),
-            thread.getTitle(),
-            thread.getCreatedAt()
+                thread.getId(),
+                thread.getUserId(),
+                thread.getType(),
+                thread.getModelId(),
+                thread.getTitle(),
+                thread.getCreatedAt()
         );
     }
-    
+
     private SubthreadResponse toSubthreadResponse(Subthread subthread) {
         return new SubthreadResponse(
-            subthread.getId(),
-            subthread.getUserId(),
-            subthread.getTitle(),
-            subthread.getCreatedAt(),
-            subthread.getThread().getId(),
-            null
+                subthread.getId(),
+                subthread.getUserId(),
+                subthread.getTitle(),
+                subthread.getCreatedAt(),
+                subthread.getInitalMessage(),
+                subthread.getThread().getId(),
+                null
         );
     }
-    
+
     private SubthreadResponse toSubthreadResponseWithMessages(Subthread subthread) {
         List<MessageResponse> messages = subthread.getMessages().stream()
-            .map(this::toMessageResponse)
-            .collect(Collectors.toList());
+                .map(this::toMessageResponse)
+                .collect(Collectors.toList());
         return new SubthreadResponse(
-            subthread.getId(),
-            subthread.getUserId(),
-            subthread.getTitle(),
-            subthread.getCreatedAt(),
-            subthread.getThread().getId(),
-            messages
+                subthread.getId(),
+                subthread.getUserId(),
+                subthread.getTitle(),
+                subthread.getCreatedAt(),
+                subthread.getInitalMessage(),
+                subthread.getThread().getId(),
+                null
         );
     }
-    
+
     @Transactional(readOnly = true)
     public Page<ThreadResponse> getAllThreads(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return threadRepository.findAll(pageable)
-            .map(this::toThreadResponse);
+                .map(this::toThreadResponse);
     }
-    
+
     @Transactional(readOnly = true)
     public List<ThreadResponse> getRecentThreads(int limit) {
         Pageable pageable = PageRequest.of(0, limit);
         return threadRepository.findAllByOrderByCreatedAtDesc(pageable).stream()
-            .map(this::toThreadResponse)
-            .collect(Collectors.toList());
+                .map(this::toThreadResponse)
+                .collect(Collectors.toList());
     }
-    
+
     @Transactional(readOnly = true)
     public Page<SubthreadResponse> getAllSubthreads(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
         return subthreadRepository.findAll(pageable)
-            .map(this::toSubthreadResponse);
+                .map(this::toSubthreadResponse);
     }
-    
+
     @Transactional(readOnly = true)
     public List<SubthreadResponse> getRecentSubthreads(int limit) {
         Pageable pageable = PageRequest.of(0, limit);
         return subthreadRepository.findAllByOrderByCreatedAtDesc(pageable).stream()
-            .map(this::toSubthreadResponse)
-            .collect(Collectors.toList());
+                .map(this::toSubthreadResponse)
+                .collect(Collectors.toList());
     }
-    
+
     @Transactional(readOnly = true)
     public List<SubthreadResponse> getSubthreadsByThread(UUID threadId) {
         List<Subthread> subthreads = subthreadRepository.findByThreadId(threadId);
         return subthreads.stream()
-            .map(this::toSubthreadResponse)
-            .collect(Collectors.toList());
+                .map(this::toSubthreadResponse)
+                .collect(Collectors.toList());
     }
-    
+
     @Transactional(readOnly = true)
     public List<SubthreadResponse> getSubthreadsByThreadWithMessages(UUID threadId) {
         List<Subthread> subthreads = subthreadRepository.findByThreadId(threadId);
         return subthreads.stream()
-            .map(this::toSubthreadResponseWithMessages)
-            .collect(Collectors.toList());
+                .map(this::toSubthreadResponseWithMessages)
+                .collect(Collectors.toList());
     }
 }

@@ -23,7 +23,10 @@ public class Subthread {
     
     @Column(nullable = false)
     private String title;
-    
+
+    @Column(nullable = false)
+    private String initalMessage;
+
     @Column(name = "created_at", nullable = false)
     private LocalDateTime createdAt;
     
@@ -31,7 +34,8 @@ public class Subthread {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "thread_id", nullable = false)
     private Thread thread;
-    
+
+
     @OneToMany(mappedBy = "subthread", cascade = CascadeType.ALL)
     private List<Message> messages = new ArrayList<>();
 }
