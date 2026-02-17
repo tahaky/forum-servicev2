@@ -67,6 +67,7 @@ public class ForumService {
         Message message = new Message();
         message.setUserId(request.getUserId());
         message.setBody(request.getBody());
+        message.setFromPlateNumber(request.getFromPlateNumber());
         message.setCreatedAt(LocalDateTime.now());
         message.setUpvoteCount(0);
         message.setDeleted(false);
@@ -140,7 +141,8 @@ public class ForumService {
             message.getUpvoteCount(),
             message.getDeleted(),
             message.getUpdatedAt(),
-            message.getSubthread().getId()
+            message.getSubthread().getId(),
+            message.getFromPlateNumber()
         );
     }
     

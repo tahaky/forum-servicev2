@@ -25,7 +25,8 @@ CREATE TABLE IF NOT EXISTS messages (
     upvote_count INT NOT NULL DEFAULT 0,
     deleted BOOLEAN NOT NULL DEFAULT FALSE,
     updated_at TIMESTAMP WITH TIME ZONE,
-    subthread_id UUID NOT NULL REFERENCES subthreads(id)
+    subthread_id UUID NOT NULL REFERENCES subthreads(id),
+    from_plate_number VARCHAR(255) NOT NULL
 );
 
 CREATE TABLE IF NOT EXISTS message_vote (
@@ -53,10 +54,10 @@ INSERT INTO subthreads (user_id, title, thread_id)
 SELECT 'mehmet', 'Batarya Ömrü', id FROM threads WHERE model_id = 'tesla-model-s';
 
 -- Mesaj ekleme
-INSERT INTO messages (user_id, body, subthread_id)
-SELECT 'ahmet', 'BMW M3 gerçekten yüksek performanslı bir araç.', id
+INSERT INTO messages (user_id, body, subthread_id, from_plate_number)
+SELECT 'ahmet', 'BMW M3 gerçekten yüksek performanslı bir araç.', id, '34ABC123'
 FROM subthreads WHERE title = 'Motor Performansı';
 
-INSERT INTO messages (user_id, body, subthread_id)
-SELECT 'mehmet', 'Tesla Model S batarya konusunda çok başarılı.', id
+INSERT INTO messages (user_id, body, subthread_id, from_plate_number)
+SELECT 'mehmet', 'Tesla Model S batarya konusunda çok başarılı.', id, '06XYZ789'
 FROM subthreads WHERE title = 'Batarya Ömrü';
