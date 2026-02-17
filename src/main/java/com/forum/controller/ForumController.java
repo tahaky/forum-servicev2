@@ -65,4 +65,17 @@ public class ForumController {
         List<MessageResponse> messages = forumService.getMessagesByModelId(modelId);
         return ResponseEntity.ok(messages);
     }
+    
+    @GetMapping("/threads")
+    public ResponseEntity<List<com.forum.entity.Thread>> getAllThreads() {
+        List<com.forum.entity.Thread> threads = forumService.getAllThreads();
+        return ResponseEntity.ok(threads);
+    }
+    
+    @GetMapping("/threads/recent")
+    public ResponseEntity<List<com.forum.entity.Thread>> getRecentThreads(
+            @RequestParam(defaultValue = "10") int limit) {
+        List<com.forum.entity.Thread> threads = forumService.getRecentThreads(limit);
+        return ResponseEntity.ok(threads);
+    }
 }

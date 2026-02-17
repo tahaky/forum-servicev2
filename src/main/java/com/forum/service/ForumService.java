@@ -14,6 +14,8 @@ import com.forum.repository.SubthreadRepository;
 import com.forum.repository.MessageRepository;
 import com.forum.repository.MessageVoteRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import java.time.LocalDateTime;
@@ -137,5 +139,16 @@ public class ForumService {
             message.getUpdatedAt(),
             message.getSubthread().getId()
         );
+    }
+    
+    @Transactional(readOnly = true)
+    public List<com.forum.entity.Thread> getAllThreads() {
+        return threadRepository.findAll();
+    }
+    
+    @Transactional(readOnly = true)
+    public List<com.forum.entity.Thread> getRecentThreads(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return threadRepository.findAllByOrderByCreatedAtDesc(pageable);
     }
 }
