@@ -36,6 +36,9 @@ public class Message {
     @Column(name = "updated_at")
     private LocalDateTime updatedAt;
     
+    @Column(name = "from_plate_number", nullable = false)
+    private String fromPlateNumber;
+    
     @JsonIgnore
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "subthread_id", nullable = false)
