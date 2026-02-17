@@ -168,7 +168,12 @@ Example: `GET /subthreads/recent?limit=5`
 
 Returns all subthreads for a specific thread.
 
-Example: `GET /threads/123e4567-e89b-12d3-a456-426614174000/subthreads`
+Query parameters:
+- `includeMessages` (optional): Boolean flag to include all messages in each subthread response (default: false)
+
+Examples: 
+- `GET /threads/123e4567-e89b-12d3-a456-426614174000/subthreads` - Returns subthreads only
+- `GET /threads/123e4567-e89b-12d3-a456-426614174000/subthreads?includeMessages=true` - Returns subthreads with all their messages included
 
 ## Building and Running
 
