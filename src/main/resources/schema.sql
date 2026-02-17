@@ -13,6 +13,7 @@ CREATE TABLE IF NOT EXISTS subthreads (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id VARCHAR(255) NOT NULL,
     title VARCHAR(255) NOT NULL,
+    initalMessage TEXT NOT NULL ,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
     thread_id UUID NOT NULL REFERENCES threads(id)
 );
