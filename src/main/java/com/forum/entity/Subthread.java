@@ -24,7 +24,7 @@ public class Subthread {
     @Column(nullable = false)
     private String title;
 
-    @Column(nullable = false)
+    @Column(nullable = false,columnDefinition = "TEXT")
     private String initalMessage;
 
     @Column(name = "created_at", nullable = false)
