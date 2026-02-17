@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS subthreads (
     thread_id UUID NOT NULL REFERENCES threads(id)
 );
 
-CREATE TABLE IF NOT EXISTS messages (
+CREATE TABLE IF NOT EXISTS messages_table (
     id UUID PRIMARY KEY DEFAULT gen_random_uuid(),
     user_id VARCHAR(255) NOT NULL,
     body TEXT NOT NULL,
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS messages (
 );
 
 CREATE TABLE IF NOT EXISTS message_vote (
-    message_id UUID NOT NULL REFERENCES messages(id),
+    message_id UUID NOT NULL REFERENCES messages_table(id),
     user_id VARCHAR(255) NOT NULL,
     upvoted BOOLEAN NOT NULL,
     created_at TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -53,10 +53,10 @@ INSERT INTO subthreads (user_id, title, thread_id)
 SELECT 'mehmet', 'Batarya Ömrü', id FROM threads WHERE model_id = 'tesla-model-s';
 
 -- Mesaj ekleme
-INSERT INTO messages (user_id, body, subthread_id)
+INSERT INTO messages_table (user_id, body, subthread_id)
 SELECT 'ahmet', 'BMW M3 gerçekten yüksek performanslı bir araç.', id
 FROM subthreads WHERE title = 'Motor Performansı';
 
-INSERT INTO messages (user_id, body, subthread_id)
+INSERT INTO messages_table (user_id, body, subthread_id)
 SELECT 'mehmet', 'Tesla Model S batarya konusunda çok başarılı.', id
 FROM subthreads WHERE title = 'Batarya Ömrü';
