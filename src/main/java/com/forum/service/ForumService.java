@@ -6,6 +6,7 @@ import com.forum.dto.CreateMessageRequest;
 import com.forum.dto.VoteRequest;
 import com.forum.dto.MessageResponse;
 import com.forum.dto.ThreadResponse;
+import com.forum.dto.SubthreadResponse;
 import com.forum.entity.Message;
 import com.forum.entity.MessageVote;
 import com.forum.entity.MessageVoteId;
@@ -154,6 +155,16 @@ public class ForumService {
         );
     }
     
+    private SubthreadResponse toSubthreadResponse(Subthread subthread) {
+        return new SubthreadResponse(
+            subthread.getId(),
+            subthread.getUserId(),
+            subthread.getTitle(),
+            subthread.getCreatedAt(),
+            subthread.getThread().getId()
+        );
+    }
+    
     @Transactional(readOnly = true)
     public Page<ThreadResponse> getAllThreads(int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
@@ -166,6 +177,29 @@ public class ForumService {
         Pageable pageable = PageRequest.of(0, limit);
         return threadRepository.findAllByOrderByCreatedAtDesc(pageable).stream()
             .map(this::toThreadResponse)
+            .collect(Collectors.toList());
+    }
+    
+    @Transactional(readOnly = true)
+    public Page<SubthreadResponse> getAllSubthreads(int page, int size) {
+        Pageable pageable = PageRequest.of(page, size);
+        return subthreadRepository.findAll(pageable)
+            .map(this::toSubthreadResponse);
+    }
+    
+    @Transactional(readOnly = true)
+    public List<SubthreadResponse> getRecentSubthreads(int limit) {
+        Pageable pageable = PageRequest.of(0, limit);
+        return subthreadRepository.findAllByOrderByCreatedAtDesc(pageable).stream()
+            .map(this::toSubthreadResponse)
+            .collect(Collectors.toList());
+    }
+    
+    @Transactional(readOnly = true)
+    public List<SubthreadResponse> getSubthreadsByThread(UUID threadId) {
+        List<Subthread> subthreads = subthreadRepository.findByThreadId(threadId);
+        return subthreads.stream()
+            .map(this::toSubthreadResponse)
             .collect(Collectors.toList());
     }
 }

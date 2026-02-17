@@ -6,6 +6,7 @@ import com.forum.dto.CreateMessageRequest;
 import com.forum.dto.VoteRequest;
 import com.forum.dto.MessageResponse;
 import com.forum.dto.ThreadResponse;
+import com.forum.dto.SubthreadResponse;
 import com.forum.entity.Message;
 import com.forum.entity.MessageVote;
 import com.forum.entity.Subthread;
@@ -85,5 +86,27 @@ public class ForumController {
             @RequestParam(defaultValue = "10") @Min(1) @Max(100) int limit) {
         List<ThreadResponse> threads = forumService.getRecentThreads(limit);
         return ResponseEntity.ok(threads);
+    }
+    
+    @GetMapping("/subthreads")
+    public ResponseEntity<Page<SubthreadResponse>> getAllSubthreads(
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size) {
+        Page<SubthreadResponse> subthreads = forumService.getAllSubthreads(page, size);
+        return ResponseEntity.ok(subthreads);
+    }
+    
+    @GetMapping("/subthreads/recent")
+    public ResponseEntity<List<SubthreadResponse>> getRecentSubthreads(
+            @RequestParam(defaultValue = "10") @Min(1) @Max(100) int limit) {
+        List<SubthreadResponse> subthreads = forumService.getRecentSubthreads(limit);
+        return ResponseEntity.ok(subthreads);
+    }
+    
+    @GetMapping("/threads/{threadId}/subthreads")
+    public ResponseEntity<List<SubthreadResponse>> getSubthreadsByThread(
+            @PathVariable UUID threadId) {
+        List<SubthreadResponse> subthreads = forumService.getSubthreadsByThread(threadId);
+        return ResponseEntity.ok(subthreads);
     }
 }

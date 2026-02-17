@@ -142,6 +142,34 @@ Query parameters:
 
 Example: `GET /threads/recent?limit=5`
 
+### 9. Get All Subthreads (Paginated)
+**GET** `/subthreads?page={page}&size={size}`
+
+Returns all subthreads in the forum with pagination.
+
+Query parameters:
+- `page` (optional): Page number (0-indexed, default: 0)
+- `size` (optional): Number of subthreads per page (1-100, default: 10)
+
+Example: `GET /subthreads?page=0&size=20`
+
+### 10. Get Recent Subthreads
+**GET** `/subthreads/recent?limit={limit}`
+
+Returns recent subthreads ordered by creation date (most recent first).
+
+Query parameters:
+- `limit` (optional): Number of subthreads to return (1-100, default: 10)
+
+Example: `GET /subthreads/recent?limit=5`
+
+### 11. Get Subthreads by Thread
+**GET** `/threads/{threadId}/subthreads`
+
+Returns all subthreads for a specific thread.
+
+Example: `GET /threads/123e4567-e89b-12d3-a456-426614174000/subthreads`
+
 ## Building and Running
 
 ```bash
