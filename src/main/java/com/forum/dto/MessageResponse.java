@@ -18,5 +18,4 @@ public class MessageResponse {
     private Boolean deleted;
     private LocalDateTime updatedAt;
     private UUID subthreadId;
-    private String fromPlateNumber;
 }

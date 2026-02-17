@@ -10,5 +10,4 @@ import lombok.NoArgsConstructor;
 public class CreateMessageRequest {
     private String userId;
     private String body;
-    private String fromPlateNumber;
 }
