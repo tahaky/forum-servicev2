@@ -121,6 +121,21 @@ Returns all messages for a specific subthread.
 
 Returns all messages from all subthreads related to a specific car model.
 
+### 7. Get All Threads
+**GET** `/threads`
+
+Returns all threads in the forum.
+
+### 8. Get Recent Threads
+**GET** `/threads/recent?limit={limit}`
+
+Returns recent threads ordered by creation date (most recent first).
+
+Query parameters:
+- `limit` (optional): Number of threads to return (default: 10)
+
+Example: `GET /threads/recent?limit=5`
+
 ## Building and Running
 
 ```bash
