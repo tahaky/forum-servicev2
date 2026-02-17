@@ -62,7 +62,6 @@ class ForumServiceCreateMessageTest {
         CreateMessageRequest request = new CreateMessageRequest();
         request.setUserId("test-user");
         request.setBody("This is a test message");
-        request.setFromPlateNumber("34ABC123");
 
         when(subthreadRepository.findById(subthreadId)).thenReturn(Optional.of(testSubthread));
         when(messageRepository.save(any(Message.class))).thenAnswer(invocation -> invocation.getArgument(0));
@@ -74,7 +73,6 @@ class ForumServiceCreateMessageTest {
         assertNotNull(result);
         assertEquals("test-user", result.getUserId());
         assertEquals("This is a test message", result.getBody());
-        assertEquals("34ABC123", result.getFromPlateNumber());
         assertNotNull(result.getCreatedAt());
         assertEquals(0, result.getUpvoteCount());
         assertEquals(false, result.getDeleted());
@@ -83,12 +81,6 @@ class ForumServiceCreateMessageTest {
         // Verify interactions
         verify(subthreadRepository, times(1)).findById(subthreadId);
         verify(messageRepository, times(1)).save(any(Message.class));
-
-        // Verify the message saved has the correct fields
-        ArgumentCaptor<Message> messageCaptor = ArgumentCaptor.forClass(Message.class);
-        verify(messageRepository).save(messageCaptor.capture());
-        Message savedMessage = messageCaptor.getValue();
-        assertEquals("34ABC123", savedMessage.getFromPlateNumber());
     }
 
     @Test
@@ -98,7 +90,6 @@ class ForumServiceCreateMessageTest {
         CreateMessageRequest request = new CreateMessageRequest();
         request.setUserId("test-user");
         request.setBody("This is a test message");
-        request.setFromPlateNumber("34ABC123");
 
         when(subthreadRepository.findById(subthreadId)).thenReturn(Optional.empty());
 
@@ -112,29 +103,27 @@ class ForumServiceCreateMessageTest {
     }
 
     @Test
-    void testCreateMessage_WithDifferentPlateNumbers() {
+    void testCreateMessage_WithMultipleMessages() {
         // Given
         UUID subthreadId = testSubthread.getId();
-        String[] plateNumbers = {"34ABC123", "06XYZ789", "35DEF456", "01GHI789"};
+        int messageCount = 4;
 
         when(subthreadRepository.findById(subthreadId)).thenReturn(Optional.of(testSubthread));
         when(messageRepository.save(any(Message.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
-        // When & Then - Test multiple plate numbers
-        for (String plateNumber : plateNumbers) {
+        // When & Then - Test multiple messages
+        for (int i = 0; i < messageCount; i++) {
             CreateMessageRequest request = new CreateMessageRequest();
             request.setUserId("test-user");
-            request.setBody("Message from " + plateNumber);
-            request.setFromPlateNumber(plateNumber);
+            request.setBody("Test message " + (i + 1));
 
             Message result = forumService.createMessage(subthreadId, request);
 
             assertNotNull(result);
-            assertEquals(plateNumber, result.getFromPlateNumber());
-            assertEquals("Message from " + plateNumber, result.getBody());
+            assertEquals("Test message " + (i + 1), result.getBody());
         }
 
         // Verify save was called for each message
-        verify(messageRepository, times(plateNumbers.length)).save(any(Message.class));
+        verify(messageRepository, times(messageCount)).save(any(Message.class));
     }
 }

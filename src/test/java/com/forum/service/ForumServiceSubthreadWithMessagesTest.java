@@ -69,7 +69,6 @@ class ForumServiceSubthreadWithMessagesTest {
         message1.setId(UUID.randomUUID());
         message1.setUserId("user001");
         message1.setBody("This is message 1");
-        message1.setFromPlateNumber("34ABC123");
         message1.setCreatedAt(LocalDateTime.now().minusMinutes(30));
         message1.setUpvoteCount(5);
         message1.setDeleted(false);
@@ -79,7 +78,6 @@ class ForumServiceSubthreadWithMessagesTest {
         message2.setId(UUID.randomUUID());
         message2.setUserId("user002");
         message2.setBody("This is message 2");
-        message2.setFromPlateNumber("06XYZ789");
         message2.setCreatedAt(LocalDateTime.now().minusMinutes(20));
         message2.setUpvoteCount(3);
         message2.setDeleted(false);
@@ -90,7 +88,6 @@ class ForumServiceSubthreadWithMessagesTest {
         message3.setId(UUID.randomUUID());
         message3.setUserId("user003");
         message3.setBody("This is message 3");
-        message3.setFromPlateNumber("35DEF456");
         message3.setCreatedAt(LocalDateTime.now().minusMinutes(10));
         message3.setUpvoteCount(7);
         message3.setDeleted(false);
