@@ -121,10 +121,16 @@ Returns all messages for a specific subthread.
 
 Returns all messages from all subthreads related to a specific car model.
 
-### 7. Get All Threads
-**GET** `/threads`
+### 7. Get All Threads (Paginated)
+**GET** `/threads?page={page}&size={size}`
 
-Returns all threads in the forum.
+Returns all threads in the forum with pagination.
+
+Query parameters:
+- `page` (optional): Page number (0-indexed, default: 0)
+- `size` (optional): Number of threads per page (1-100, default: 10)
+
+Example: `GET /threads?page=0&size=20`
 
 ### 8. Get Recent Threads
 **GET** `/threads/recent?limit={limit}`
@@ -132,7 +138,7 @@ Returns all threads in the forum.
 Returns recent threads ordered by creation date (most recent first).
 
 Query parameters:
-- `limit` (optional): Number of threads to return (default: 10)
+- `limit` (optional): Number of threads to return (1-100, default: 10)
 
 Example: `GET /threads/recent?limit=5`
 

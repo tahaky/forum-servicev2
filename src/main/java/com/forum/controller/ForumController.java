@@ -5,19 +5,25 @@ import com.forum.dto.CreateSubthreadRequest;
 import com.forum.dto.CreateMessageRequest;
 import com.forum.dto.VoteRequest;
 import com.forum.dto.MessageResponse;
+import com.forum.dto.ThreadResponse;
 import com.forum.entity.Message;
 import com.forum.entity.MessageVote;
 import com.forum.entity.Subthread;
 import com.forum.service.ForumService;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import java.util.List;
 import java.util.UUID;
 
 @RestController
 @RequiredArgsConstructor
+@Validated
 public class ForumController {
     
     private final ForumService forumService;
@@ -67,15 +73,17 @@ public class ForumController {
     }
     
     @GetMapping("/threads")
-    public ResponseEntity<List<com.forum.entity.Thread>> getAllThreads() {
-        List<com.forum.entity.Thread> threads = forumService.getAllThreads();
+    public ResponseEntity<Page<ThreadResponse>> getAllThreads(
+            @RequestParam(defaultValue = "0") @Min(0) int page,
+            @RequestParam(defaultValue = "10") @Min(1) @Max(100) int size) {
+        Page<ThreadResponse> threads = forumService.getAllThreads(page, size);
         return ResponseEntity.ok(threads);
     }
     
     @GetMapping("/threads/recent")
-    public ResponseEntity<List<com.forum.entity.Thread>> getRecentThreads(
-            @RequestParam(defaultValue = "10") int limit) {
-        List<com.forum.entity.Thread> threads = forumService.getRecentThreads(limit);
+    public ResponseEntity<List<ThreadResponse>> getRecentThreads(
+            @RequestParam(defaultValue = "10") @Min(1) @Max(100) int limit) {
+        List<ThreadResponse> threads = forumService.getRecentThreads(limit);
         return ResponseEntity.ok(threads);
     }
 }
