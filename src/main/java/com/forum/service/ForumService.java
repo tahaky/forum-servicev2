@@ -161,7 +161,8 @@ public class ForumService {
             subthread.getUserId(),
             subthread.getTitle(),
             subthread.getCreatedAt(),
-            subthread.getThread().getId()
+            subthread.getThread().getId(),
+            null
         );
     }
     

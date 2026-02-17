@@ -17,12 +17,4 @@ public class SubthreadResponse {
     private LocalDateTime createdAt;
     private UUID threadId;
     private List<MessageResponse> messages;
-    
-    public SubthreadResponse(UUID id, String userId, String title, LocalDateTime createdAt, UUID threadId) {
-        this.id = id;
-        this.userId = userId;
-        this.title = title;
-        this.createdAt = createdAt;
-        this.threadId = threadId;
-    }
 }
