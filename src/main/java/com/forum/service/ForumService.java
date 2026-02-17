@@ -161,7 +161,22 @@ public class ForumService {
             subthread.getUserId(),
             subthread.getTitle(),
             subthread.getCreatedAt(),
-            subthread.getThread().getId()
+            subthread.getThread().getId(),
+            null
+        );
+    }
+    
+    private SubthreadResponse toSubthreadResponseWithMessages(Subthread subthread) {
+        List<MessageResponse> messages = subthread.getMessages().stream()
+            .map(this::toMessageResponse)
+            .collect(Collectors.toList());
+        return new SubthreadResponse(
+            subthread.getId(),
+            subthread.getUserId(),
+            subthread.getTitle(),
+            subthread.getCreatedAt(),
+            subthread.getThread().getId(),
+            messages
         );
     }
     
@@ -200,6 +215,14 @@ public class ForumService {
         List<Subthread> subthreads = subthreadRepository.findByThreadId(threadId);
         return subthreads.stream()
             .map(this::toSubthreadResponse)
+            .collect(Collectors.toList());
+    }
+    
+    @Transactional(readOnly = true)
+    public List<SubthreadResponse> getSubthreadsByThreadWithMessages(UUID threadId) {
+        List<Subthread> subthreads = subthreadRepository.findByThreadId(threadId);
+        return subthreads.stream()
+            .map(this::toSubthreadResponseWithMessages)
             .collect(Collectors.toList());
     }
 }

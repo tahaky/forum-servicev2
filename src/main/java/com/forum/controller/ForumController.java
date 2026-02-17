@@ -105,8 +105,14 @@ public class ForumController {
     
     @GetMapping("/threads/{threadId}/subthreads")
     public ResponseEntity<List<SubthreadResponse>> getSubthreadsByThread(
-            @PathVariable UUID threadId) {
-        List<SubthreadResponse> subthreads = forumService.getSubthreadsByThread(threadId);
+            @PathVariable UUID threadId,
+            @RequestParam(defaultValue = "false") boolean includeMessages) {
+        List<SubthreadResponse> subthreads;
+        if (includeMessages) {
+            subthreads = forumService.getSubthreadsByThreadWithMessages(threadId);
+        } else {
+            subthreads = forumService.getSubthreadsByThread(threadId);
+        }
         return ResponseEntity.ok(subthreads);
     }
 }
